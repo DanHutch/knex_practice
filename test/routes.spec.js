@@ -14,16 +14,16 @@ const database = require('knex')(configuration);
 chai.use(chaiHttp);
 
 describe('Client Routes', () => {
-  it('should return the homepage with text', done => {
-    chai.request(server)
-    .get('/')
-    .end((err, response) => {
-      response.should.have.status(200);
-      response.should.be.html;
-      response.res.text.should.equal('Hello, Publications');
-      done();
-    });
-  });
+  // it('should return the homepage with text', done => {
+  //   chai.request(server)
+  //   .get('/')
+  //   .end((err, response) => {
+  //     response.should.have.status(200);
+  //     response.should.be.html;
+  //     response.res.text.should.equal('Hello, Publications');
+  //     done();
+  //   });
+  // });
 
   it('should return a 404 for a route that does not exist', done => {
     chai.request(server)
@@ -79,6 +79,8 @@ describe('GET /api/v1/papers', () => {
           response.should.have.status(200);
           response.should.be.json;
           response.body.should.be.a('array');
+          response.body[0].should.be.a('object');
+          response.body[0].should.have.property('note');
           done();
         });
       });

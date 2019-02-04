@@ -8,23 +8,12 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
-const papers = import('papers');
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', process.env.PORT || 3000);
 app.locals.title = 'Publications';
 
-app.user('/api/v1/papers', papers)
-
-app.get('/api/v1/papers', (request, response) => {
-  .then((papers) => {
-    response.status(200).json(papers);
-  })
-  .catch((error) => {
-    response.status(500).json({ error });
-  });
-});
+app.use('/api/v1/papers', papers)
 
 app.post('/api/v1/papers/footnotes', (request, response) => {
   const paper = request.body;
@@ -52,22 +41,6 @@ app.get('/api/v1/papers/:id', (request, response) => {
     .then(paper_one => {
       if (paper_one.length) {
         response.status(200).json(paper_one);
-      } else {
-        response.status(404).json({
-          error: `Could not find paper with id ${request.params.id}`
-        });
-      }
-    })
-    .catch(error => {
-      response.status(500).json({ error });
-    });
-});
-
-app.get('/api/v1/papers/:id/footnotes', (request, response) => {
-  database('footnotes').where('paper_id', request.params.id).select()
-    .then(footnote => {
-      if (footnote.length) {
-        response.status(200).json(footnote);
       } else {
         response.status(404).json({
           error: `Could not find paper with id ${request.params.id}`
